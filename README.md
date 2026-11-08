@@ -81,3 +81,13 @@ Environment configuration files (`.env` and `.env.example`) are provided in the 
 - **School Admin Screen:** Allows creating classes with name, shift, and total seat limits.
 - **Live Class Seat Board:** Auto-polls seat changes every 3 seconds without page reload.
 - **Active Hold Countdown & Auto-Expire:** Real-time countdown timer that changes status to `EXPIRED` and disables confirmation the second time expires without requiring a page refresh.
+
+---
+
+## 🌐 Production VPS Deployment Architecture (Cloudflare + Caddy + Multi-Port Scaling)
+
+For high-traffic admission windows on a production VPS, this system is architected to scale horizontally across multiple ports:
+1. **Cloudflare Edge Layer:** Protects the origin server with Bot Fight Mode, DDoS mitigation, and Edge Rate Limiting against automated scripts.
+2. **Caddy Reverse Proxy & Load Balancer:** Runs on the VPS (`:80` / `:443` with auto-SSL) and load-balances incoming requests across multiple isolated .NET 8 backend instances running on separate ports (e.g., `localhost:8081`, `localhost:8082`, `localhost:8083`).
+3. **Multi-Instance Concurrency Safety:** Because all backend instances share the same PostgreSQL (`SELECT ... FOR UPDATE` row-level locks) and Redis cluster, scaling across multiple ports maintains 100% seat count accuracy (`held + confirmed <= totalSeats`).
+

@@ -39,8 +39,13 @@ docker compose down
 ## 🧪 How to Run Automated & Concurrency Tests
 
 ### Backend Tests:
-To run the backend integration and high-concurrency automated tests:
+To run the backend integration and high-concurrency automated tests using Docker (no local .NET SDK required):
 
+```bash
+docker run --rm -v "${PWD}/backend:/src" -w /src mcr.microsoft.com/dotnet/sdk:8.0 dotnet test
+```
+
+Or if you have the .NET 8 SDK installed locally:
 ```bash
 cd backend
 dotnet test
